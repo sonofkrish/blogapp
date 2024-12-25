@@ -1,23 +1,11 @@
-import { useState } from "react";
-import Todos from "./components/Todos";
+import { Navbar } from "./components/Navbar";
 
 function App() {
-  const [count, setCount] = useState(0);
-  const [todos, setTodos] = useState(["todo 1", "todo 2"]);
-
-  const increment = () => {
-    setCount((c) => c + 1);
-  };
-
   return (
-    <>
-      <Todos todos={todos}/>
-      <hr />
-      <div>
-        Count: {count}
-        <button onClick={increment} className="bg-sky-500">+</button>
-      </div>
-    </>
+    <div className="px-4 md:px-8 lg:px-16 lx:px-32 2xl:px-64">
+      {/* NAVBAR */}
+      <Navbar />
+    </div>
   );
 }
 
