@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Todos from "./components/Todos";
-import "./App.css";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -12,11 +11,11 @@ function App() {
 
   return (
     <>
-      <Todos todos={todos} />
+      <Todos todos={todos}/>
       <hr />
       <div>
         Count: {count}
-        <button onClick={increment}>+</button>
+        <button onClick={increment} className="bg-sky-500">+</button>
       </div>
     </>
   );
