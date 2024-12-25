@@ -2,16 +2,17 @@ import { useState } from "react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
 import Image from "./Image";
+import { Link } from "react-router";
 
 export const Navbar = () => {
   const [open, setOpen] = useState<boolean>(false);
 
   return (
     <div className="w-full h-16 md:h-20 flex items-center justify-between">
-      <div className="flex items-center text-xl font-bold">
+      <Link to="/" className="flex items-center text-xl font-bold">
         <Image src="/logoB.png" width="48" height="48" alt="logo" />
         <span className="-left-1 relative">alalog</span>
-      </div>
+      </Link>
       <div className="md:hidden">
         <div
           className="cursor-pointer"
@@ -28,27 +29,27 @@ export const Navbar = () => {
             open ? "-right-0" : "-right-[100%]"
           }`}
         >
-          <a href="/">Home</a>
-          <a href="/">Trending</a>
-          <a href="/">Most Popular</a>
-          <a href="/">About</a>
-          <a href="/">
+          <Link to="/">Home</Link>
+          <Link to="/">Trending</Link>
+          <Link to="/">Most Popular</Link>
+          <Link to="/">About</Link>
+          <Link to="/login">
             <button className="py-2 px-4 rounded-3xl bg-blue-800 text-white">
               Login
             </button>
-          </a>
+          </Link>
         </div>
       </div>
       <div className="hidden md:flex items-center gap-8 xl:gap-12 font-medium">
-        <a href="/">Home</a>
-        <a href="/">Trending</a>
-        <a href="/">Most Popular</a>
-        <a href="/">About</a>
-        <a href="/">
+        <Link to="/">Home</Link>
+        <Link to="/">Trending</Link>
+        <Link to="/">Most Popular</Link>
+        <Link to="/">About</Link>
+        <Link to="/login">
           <button className="py-2 px-4 rounded-3xl bg-blue-800 text-white">
             Login
           </button>
-        </a>
+        </Link>
       </div>
     </div>
   );
