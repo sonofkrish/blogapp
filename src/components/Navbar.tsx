@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
+import Image from "./Image";
+
 export const Navbar = () => {
   const [open, setOpen] = useState<boolean>(false);
 
   return (
     <div className="w-full h-16 md:h-20 flex items-center justify-between">
       <div className="flex items-center text-xl font-bold">
-        <img src="./logoB.png" className="w-12 h-12" alt="" />
+        <Image src="/logoB.png" width="48" height="48" alt="logo" />
         <span className="-left-1 relative">alalog</span>
       </div>
       <div className="md:hidden">

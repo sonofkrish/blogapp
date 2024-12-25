@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "babel-plugin-react-compiler": "^19.0.0-beta-b2e8e9c-20241220",
+    "imagekitio-react": "^4.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
