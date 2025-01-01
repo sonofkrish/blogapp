@@ -1,12 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router";
-import { SignedIn, SignedOut, UserButton } from "@clerk/clerk-react";
+import { SignedIn, SignedOut, UserButton, useAuth } from "@clerk/clerk-react";
 
 import Image from "./Image";
 
 export const Navbar = () => {
   const [open, setOpen] = useState<boolean>(false);
+
+  const { getToken } = useAuth();
+
+  useEffect(() => {
+    getToken().then((token) => {
+      console.log(token);
+    });
+  }, []);
 
   return (
     <div className="w-full h-16 md:h-20 flex items-center justify-between">
