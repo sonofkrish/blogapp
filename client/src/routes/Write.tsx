@@ -1,16 +1,99 @@
+import { useAuth, useUser } from "@clerk/clerk-react";
 import "react-quill-new/dist/quill.snow.css";
 import ReactQuill from "react-quill-new";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
+import { toast } from "react-toastify";
+import Upload from "../components/Upload";
+
+import { FileResponse } from "../types";
+
+interface PostData {
+  img: string;
+  title: FormDataEntryValue | null;
+  category: FormDataEntryValue | null;
+  desc: FormDataEntryValue | null;
+  content: string;
+}
 
 export const Write = () => {
+  const { isLoaded, isSignedIn } = useUser();
+  const [value, setValue] = useState("");
+  const [cover, setCover] = useState<FileResponse>();
+  const [img, setImg] = useState<FileResponse>();
+  const [video, setVideo] = useState<FileResponse>();
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    if (img) {
+      setValue((prev) => prev + `<p><image src="${img.url}"/></p>`);
+    }
+  }, [img]);
+
+  useEffect(() => {
+    if (video) {
+      setValue(
+        (prev) => prev + `<p><iframe class="ql-video" src="${video.url}"/></p>`
+      );
+    }
+  }, [video]);
+
+  const navigate = useNavigate();
+
+  const { getToken } = useAuth();
+
+  const mutation = useMutation({
+    mutationFn: async (newPost: PostData) => {
+      const token = await getToken();
+      return axios.post(`${import.meta.env.VITE_API_URL}/posts`, newPost, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    },
+    onSuccess: (res) => {
+      toast.success("Post has been created");
+      navigate(`/${res.data.slug}`);
+    },
+  });
+
+  if (!isLoaded) {
+    return <div className="">Loading...</div>;
+  }
+
+  if (isLoaded && !isSignedIn) {
+    return <div className="">You should login!</div>;
+  }
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+
+    const data: PostData = {
+      img: cover?.filePath || "",
+      title: formData.get("title"),
+      category: formData.get("category"),
+      desc: formData.get("desc"),
+      content: value,
+    };
+
+    mutation.mutate(data);
+  };
+
   return (
     <div className="h-[calc(100vh-64px)] md:h-[calc(100vh-80px)] flex flex-col gap-6">
       <h1 className="text-cl font-light">Create a New Post</h1>
-      <form className="flex flex-col gap-6 flex-1 mb-6">
-        {/* <Upload type="image" >
-          <button className="w-max p-2 shadow-md rounded-xl text-sm text-gray-500 bg-white">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-6 flex-1 mb-6">
+        <Upload type="image" setProgress={setProgress} setData={setCover}>
+          <button
+            type="button"
+            className="w-max p-2 shadow-md rounded-xl text-sm text-gray-500 bg-white"
+          >
             Add a cover image
           </button>
-        </Upload> */}
+        </Upload>
         <input
           className="text-4xl font-semibold bg-transparent outline-none"
           type="text"
@@ -41,22 +124,29 @@ export const Write = () => {
         />
         <div className="flex flex-1 ">
           <div className="flex flex-col gap-2 mr-2">
-            {/* <Upload type="image" setProgress={setProgress} setData={setImg}>
+            <Upload type="image" setProgress={setProgress} setData={setImg}>
               🌆
             </Upload>
             <Upload type="video" setProgress={setProgress} setData={setVideo}>
               ▶️
-            </Upload> */}
+            </Upload>
           </div>
           <ReactQuill
             theme="snow"
             className="flex-1 rounded-xl bg-white shadow-md"
+            value={value}
+            onChange={setValue}
+            readOnly={0 < progress && progress < 100}
           />
         </div>
-        <button className="bg-blue-800 text-white font-medium rounded-xl mt-4 p-2 w-36 disabled:bg-blue-400 disabled:cursor-not-allowed">
-          Send
+        <button
+          type="submit"
+          disabled={mutation.isPending || (0 < progress && progress < 100)}
+          className="bg-blue-800 text-white font-medium rounded-xl mt-4 p-2 w-36 disabled:bg-blue-400 disabled:cursor-not-allowed"
+        >
+          {mutation.isPending ? "Loading..." : "Send"}
         </button>
-        Progress:
+        {"Progress:" + progress}
         {/* {mutation.isError && <span>{mutation.error.message}</span>} */}
       </form>
     </div>
